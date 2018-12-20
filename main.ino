@@ -1,18 +1,45 @@
+#include <boarddefs.h>
+#include <ir_Lego_PF_BitStreamEncoder.h>
+#include <IRremote.h>
+#include <IRremoteInt.h>
+
 void setup() {
   Serial.begin(9600);
+
+  Serial.print("READY");
 }
 
-void doThing1() {
-  Serial.println("Thing1");
-}
+void loop() {}
 
-void doThing2() {
-  Serial.println("Thing2");
-}
+/**
+ * IR light control
+ */
+int TRANS_PIN =  3; 
+IRsend irsend;
 
-void loop() {
+const int freq = 38;
 
-}
+//These are the data for my particular led strip
+const unsigned int OnOff[67] = {8900,4550, 500,600, 550,550, 550,600, 550,600, 500,600, 550,550, 550,600, 550,600, 500,1700, 550,1700, 500,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,600, 550,1700, 500,600, 500,600, 550,600, 500,1700, 550,600, 500,600, 500,1750, 500,600, 550,1700, 500,1700, 550,1700, 500,600, 500,1700, 550};
+const unsigned int  White[67] = {9000,4500, 550,550, 550,600, 550,550, 550,600, 550,550, 550,600, 550,550, 550,600, 550,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,550, 550,1700, 550,1700, 500,600, 550,550, 550,600, 550,1700, 500,600, 550,1700, 500,550, 550,600, 550,1700, 500,1700, 550,1700, 500,600, 550,1700, 500};  // NEC FF629D
+const unsigned int  BrightPlus[67] = {9000,4500, 600,550, 550,600, 500,600, 550,600, 500,600, 550,600, 500,600, 550,600, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,600, 500,600, 550,600, 550,600, 500,600, 550,600, 500,600, 550,600, 500,1700, 550,1700, 500,1700, 550,1700, 550,1650, 550};  // NEC FFE01F
+const unsigned int colorChange[67] = {8950,4500, 550,600, 500,600, 550,600, 500,600, 550,600, 500,600, 550,600, 500,600, 550,1700, 500,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 500,1700, 550,1700, 500,600, 550,600, 500,1700, 550,600, 500,600, 550,600, 500,600, 550,600, 500,1700, 500,1700, 550,600, 500,1700, 550,1700, 500,1700, 500,1700, 550};  // NEC FF906F
+const unsigned int  B_MINUS[67] = {8950,4500, 550,600, 500,600, 550,550, 550,600, 550,550, 550,600, 550,550, 550,600, 550,1700, 500,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,1700, 500,1700, 550,550, 550,600, 550,550, 550,600, 550,1700, 500,600, 550,550, 550,600, 550,1700, 500,1700, 550,1700, 500,1700, 500,600, 550,1700, 500};  // NEC FFC23D
+const unsigned int  hell[67] ={8950,4250,750,350,750,350,700,400,750,350,750,350,700,400,700,400,700,450,600,1600,600,1600,600,1650,550,1650,600,1600,600,1650,500,1700,550,1650,550,550,550,550,550,550,550,1700,500,600,500,550,550,600,500,600,500,1700,500,1700,550,1650,550,550,550,1700,500,1700,500,1700,550,1650,550};
+const unsigned int  end_d[67] = {8950,4500, 550,600, 500,600, 550,600, 500,600, 550,600, 500,600, 550,600, 500,600, 550,1650, 550,1700, 500,1700, 550,1700, 500,1700, 500,1700, 550,1700, 500,1700, 550,1700, 500,600, 550,1700, 500,1700, 500,600, 550,600, 500,600, 550,600, 500,600, 550,1700, 500,600, 550,600, 500,1700, 500,1700, 550,1700, 500,1700, 550};  // NEC FFB04F
+void sendNether(){irsend.sendRaw(hell, sizeof(OnOff),freq ); }
+
+void sendEnd(){irsend.sendRaw(end_d, sizeof(OnOff),freq );}
+
+void toggleLights(){ irsend.sendRaw(OnOff, sizeof(OnOff), freq);}
+
+void sendBrightPlus(){irsend.sendRaw(BrightPlus, sizeof(BrightPlus),freq);}
+
+void sendBrightMinus(){irsend.sendRaw(B_MINUS, sizeof(B_MINUS),freq);}
+
+void sendWhite(){irsend.sendRaw(White, sizeof(White),freq);}
+
+void sendColorChange(){irsend.sendRaw(colorChange, sizeof(colorChange),freq);}
 
 void serialEvent() {
   while (Serial.available()) {
@@ -20,11 +47,20 @@ void serialEvent() {
 
     switch (inChar)
     {
-      case 'A':
-        doThing1();
+      case 'O':
+        toggleLights();
         break;
-      case 'B':
-        doThing2();
+      case 'I':
+        sendBrightPlus();
+        break;
+      case 'D':
+        sendBrightMinus();
+        break;
+      case 'W':
+        sendWhite();
+        break;
+      case 'C':
+        sendColorChange();
         break;
       default:
         break;
