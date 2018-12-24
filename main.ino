@@ -54,7 +54,7 @@ int tempPin = A1;
 float getAnalogTemp() {
   // Reading twice provides a more accurate reading
   val = analogRead(tempPin);
-  return ((analogRead(tempPin)/1024.0)*5000) / 10;
+  return (analogRead(tempPin)*4.9)/10;
 }
 
 
