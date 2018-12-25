@@ -60,7 +60,11 @@ float getAnalogTemp() {
 
 int getLightLevel() {
   lum_value = analogRead(pResistor);
-  return analogRead(pResistor);;
+  return analogRead(pResistor);
+}
+
+void printAllSensorData() {
+  Serial.println(String(getLightLevel()) + ";"  + String(getAnalogTemp()) + ";");
 }
 
 
@@ -93,6 +97,9 @@ void serialEvent() {
         break;
       case 'L':
         Serial.println(getLightLevel());
+        break;
+      case 'A':
+        printAllSensorData();
         break;
       default:
         break;
